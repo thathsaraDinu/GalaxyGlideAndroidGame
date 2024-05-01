@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Galaxy Glide</string>
+    <string name="your_score">Your Score:</string>
+    <string name="main_menu">Main Menu</string>
+    <string name="game_over">Game Over</string>
+    <string name="new_game">New Game</string>
+    <string name="highest_score">Highest Score</string>
+    <string name="exit">Exit</string>
+</resources>
