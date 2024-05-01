@@ -51,7 +51,7 @@
             android:fontFamily="sans-serif-smallcaps"
             android:text="@string/highest_score"
             android:textColor="@color/white"
-            android:textSize="30sp" />
+            android:textSize="22sp" />
 
         <TextView
             android:id="@+id/exit"

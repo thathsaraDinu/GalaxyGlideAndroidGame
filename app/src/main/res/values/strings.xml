@@ -6,4 +6,5 @@
     <string name="new_game">New Game</string>
     <string name="highest_score">Highest Score</string>
     <string name="exit">Exit</string>
+    <string name="play_again">Play Again</string>
 </resources>
