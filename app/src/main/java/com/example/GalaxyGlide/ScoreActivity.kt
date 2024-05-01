@@ -17,6 +17,13 @@ class ScoreActivity : AppCompatActivity() {
             val intent2: Intent = Intent(this, MainActivity::class.java);
             startActivity(intent2);
         }
+        val replay : TextView = findViewById(R.id.replay)
+
+        // Retrieve the score data sent from SpaceShipView
+        replay.setOnClickListener{
+            val intent3: Intent = Intent(this, GameActivity::class.java);
+            startActivity(intent3);
+        }
 
         val intent1 = intent
         // Retrieve the score data sent from SpaceShipView

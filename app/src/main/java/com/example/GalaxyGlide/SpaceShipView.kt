@@ -11,6 +11,7 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Typeface
+import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
 import android.widget.Toast
@@ -42,6 +43,7 @@ class SpaceShipView(context: Context) : View(context) {
     private var touch = false
     private var backgroundImage: Bitmap? = null
     private val scorePaint = Paint()
+    private val highScorePaint = Paint()
     private val life = arrayOfNulls<Bitmap>(2)
     private var collision: Bitmap;
     private var initialMeteor = true;
@@ -54,12 +56,17 @@ class SpaceShipView(context: Context) : View(context) {
 
     init {
         ship[0] = BitmapFactory.decodeResource(resources, R.drawable.rocket)
-        ship[0] = ship[0]?.let { Bitmap.createScaledBitmap(it, 100, 200, false) }
+        ship[0] = ship[0]?.let { Bitmap.createScaledBitmap(it, 120, 240, false) }
 
         scorePaint.color = Color.WHITE
         scorePaint.textSize = 50f
         scorePaint.setTypeface(Typeface.DEFAULT_BOLD)
         scorePaint.isAntiAlias = true
+
+        highScorePaint.color = Color.CYAN
+        highScorePaint.textSize = 30f
+        highScorePaint.setTypeface(Typeface.DEFAULT_BOLD)
+        highScorePaint.isAntiAlias = true
 
         life[0] = BitmapFactory.decodeResource(resources, R.drawable.heart)
         life[0] = life[0]?.let { Bitmap.createScaledBitmap(it, 50, 50, false) }
@@ -67,16 +74,16 @@ class SpaceShipView(context: Context) : View(context) {
         life[1] = life[1]?.let { Bitmap.createScaledBitmap(it, 50, 50, false) }
 
         meteor[0] = BitmapFactory.decodeResource(resources, R.drawable.asteroid)
-        meteor[0] = meteor[0]?.let { Bitmap.createScaledBitmap(it, 120, 120, false) }
+        meteor[0] = meteor[0]?.let { Bitmap.createScaledBitmap(it, 100, 100, false) }
         meteor[1] = BitmapFactory.decodeResource(resources, R.drawable.asteroid1)
-        meteor[1] = meteor[1]?.let { Bitmap.createScaledBitmap(it, 150, 150, false) }
+        meteor[1] = meteor[1]?.let { Bitmap.createScaledBitmap(it, 100, 100, false) }
         meteor[2] = BitmapFactory.decodeResource(resources, R.drawable.asteroid2)
-        meteor[2] = meteor[2]?.let { Bitmap.createScaledBitmap(it, 150, 150, false) }
+        meteor[2] = meteor[2]?.let { Bitmap.createScaledBitmap(it, 100, 100, false) }
         meteor[3] = BitmapFactory.decodeResource(resources, R.drawable.asteroid3)
-        meteor[3] = meteor[3]?.let { Bitmap.createScaledBitmap(it, 150, 150, false) }
+        meteor[3] = meteor[3]?.let { Bitmap.createScaledBitmap(it, 100, 100, false) }
 
         collision = BitmapFactory.decodeResource(resources, R.drawable.collision);
-        collision = Bitmap.createScaledBitmap(collision, 150, 150, false);
+        collision = Bitmap.createScaledBitmap(collision, 120, 120, false);
 
         shipX = 450
 
@@ -85,7 +92,7 @@ class SpaceShipView(context: Context) : View(context) {
         sharedPreferences = context.getSharedPreferences("SpaceGamePrefs", Context.MODE_PRIVATE)
         // Retrieve the highest score from SharedPreferences
         highestScore = sharedPreferences.getInt("highestScore", 0)
-        backgroundImage = BitmapFactory.decodeResource(resources, R.drawable.gamebackground)
+        backgroundImage = BitmapFactory.decodeResource(resources, R.drawable.gamebackground2)
 
     }
 
@@ -102,12 +109,12 @@ class SpaceShipView(context: Context) : View(context) {
 
         val minShipX = 20
         val maxShipX = canvasWidth
-        shipY = canvasHeight - 230
+        shipY = canvasHeight - 260
         if (shipX < minShipX) {
             shipX = minShipX
         }
-        if (shipX > maxShipX - 120) {
-            shipX = maxShipX - 120
+        if (shipX > maxShipX - 140) {
+            shipX = maxShipX - 140
         }
 
         if(initialMeteor) {
@@ -131,7 +138,7 @@ class SpaceShipView(context: Context) : View(context) {
         lastUpdateTimeMillis = currentTimeMillis
 
         // Increase meteor speeds every 3 seconds until meteor1speed reaches 20
-        if (meteor3speed < 20 && elapsedTimeMillis >= 3000) {
+        if (meteor3speed < 22 && elapsedTimeMillis >= 5000) {
             meteor1speed++
             meteor2speed++
             meteor3speed++
@@ -143,10 +150,14 @@ class SpaceShipView(context: Context) : View(context) {
             canvas.drawBitmap(collision, meteor2X.toFloat(), meteor2Y.toFloat(), null);
 
             lifeCounter--
-            meteor2Y = -170
+            meteor2Y = -120
             if(lifeCounter > 0) {
-                Toast.makeText(context, "Only $lifeCounter live(s) remaining", Toast.LENGTH_SHORT)
-                    .show()
+                val toast = Toast.makeText(
+                    context,
+                    "Only $lifeCounter live(s) remaining", Toast.LENGTH_SHORT
+                )
+                toast.setGravity(Gravity.TOP or Gravity.CENTER_HORIZONTAL, 0, 100)
+                toast.show()
             }
 
         }
@@ -154,37 +165,53 @@ class SpaceShipView(context: Context) : View(context) {
             canvas.drawBitmap(collision, meteor1X.toFloat(), meteor1Y.toFloat(), null);
 
             lifeCounter--
-            meteor1Y = -170
+            meteor1Y = -120
             if(lifeCounter > 0) {
-                Toast.makeText(context, "Only $lifeCounter live(s) remaining", Toast.LENGTH_SHORT)
-                    .show()
+                val toast = Toast.makeText(
+                    context,
+                    "Only $lifeCounter live(s) remaining", Toast.LENGTH_SHORT
+                )
+                toast.setGravity(Gravity.TOP or Gravity.CENTER_HORIZONTAL, 0, 100)
+                toast.show()
             }
         }
         if (hitMeteorChecker(shipX, shipY, meteor3X, meteor3Y)) {
             canvas.drawBitmap(collision, meteor3X.toFloat(), meteor3Y.toFloat(), null);
 
             lifeCounter--
-            meteor3Y = -170
+            meteor3Y = -120
             if(lifeCounter > 0) {
-                Toast.makeText(context, "Only $lifeCounter live(s) remaining", Toast.LENGTH_SHORT)
-                    .show()
+                val toast = Toast.makeText(
+                    context,
+                    "Only $lifeCounter live(s) remaining", Toast.LENGTH_SHORT
+                )
+                toast.setGravity(Gravity.TOP or Gravity.CENTER_HORIZONTAL, 0, 100)
+                toast.show()
             }
         }
         if (hitMeteorChecker(shipX, shipY, meteor4X, meteor4Y)) {
             canvas.drawBitmap(collision, meteor4X.toFloat(), meteor4Y.toFloat(), null);
 
             lifeCounter--
-            meteor4Y = -170
+            meteor4Y = -120
             if(lifeCounter > 0) {
-                Toast.makeText(context, "Only $lifeCounter live(s) remaining", Toast.LENGTH_SHORT)
-                    .show()
+                val toast = Toast.makeText(
+                    context,
+                    "Only $lifeCounter live(s) remaining", Toast.LENGTH_SHORT
+                )
+                toast.setGravity(Gravity.TOP or Gravity.CENTER_HORIZONTAL, 0, 100)
+                toast.show()
             }
         }
 
         if (lifeCounter == 0 && finished) {
-            Toast.makeText(context, "Game Over", Toast.LENGTH_SHORT).show()
+            val toast = Toast.makeText(
+                context,
+                "Game Over", Toast.LENGTH_SHORT
+            )
+            toast.setGravity(Gravity.TOP or Gravity.CENTER_HORIZONTAL, 0, 100)
+            toast.show()
             val intent = Intent(context, ScoreActivity::class.java)
-            saveHighestScore(score)
             intent.putExtra("score", score)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(intent)
@@ -192,25 +219,26 @@ class SpaceShipView(context: Context) : View(context) {
             finished = false;
         }
         if (meteor1Y > canvasHeight) {
-            meteor1Y = -170
+            meteor1Y = -120
             meteor1X = (floor(Math.random() * (maxShipX  )) ).toInt() - (meteor[0]!!.width)/2
             score += 5
         }
         if (meteor2Y > canvasHeight) {
-            meteor2Y = -170
+            meteor2Y = -120
             meteor2X = (floor(Math.random() * (maxShipX  )) ).toInt() - (meteor[0]!!.width)/2
             score += 10
         }
         if (meteor3Y > canvasHeight) {
-            meteor3Y = -170
+            meteor3Y = -120
             meteor3X = (floor(Math.random() * (maxShipX  )) ).toInt() - (meteor[0]!!.width)/2
             score += 25
         }
         if (meteor4Y > canvasHeight) {
-            meteor4Y = -170
+            meteor4Y = -120
             meteor4X = (floor(Math.random() * (maxShipX  )) ).toInt() - (meteor[0]!!.width)/2
             score += 20
         }
+        saveHighestScore(score)
 
         canvas.drawBitmap(meteor[0]!!, meteor1X.toFloat(), meteor1Y.toFloat(), null)
         canvas.drawBitmap(meteor[1]!!, meteor2X.toFloat(), meteor2Y.toFloat(), null)
@@ -227,7 +255,9 @@ class SpaceShipView(context: Context) : View(context) {
             }
         }
         canvas.drawBitmap(ship[0]!!, shipX.toFloat(), shipY.toFloat(), null)
-        canvas.drawText("Score : $score", 20f, 80f, scorePaint)
+        canvas.drawText("High Scores : $highestScore", 20f, 50f, highScorePaint)
+
+        canvas.drawText("Score : $score", 20f, 110f, scorePaint)
 
     }
 
@@ -284,8 +314,8 @@ class SpaceShipView(context: Context) : View(context) {
     }
 
     private fun isInsideDraggableArea(x: Float, y: Float): Boolean {
-        return if (y > shipY) {
-            x < shipX + 300 && x > shipX
+        return if (y > shipY - 10) {
+            x < shipX + 130 && x > shipX -10
         } else {
             false
         }
